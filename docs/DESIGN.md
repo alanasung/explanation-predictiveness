@@ -1,14 +1,14 @@
-# Design Document: Where Privileged Self-Knowledge Breaks Down
+# Design Document: When a Model's Own Story Stops Predicting Its Answers
 
 ## 1. Purpose
 
-This document is the method contract for **Where Privileged Self-Knowledge Breaks Down**. It specifies what is
+This document is the method contract for **When a Model's Own Story Stops Predicting Its Answers**. It specifies what is
 measured, how measurement is instrumented, which artifacts are produced, and
 which claims are out of scope for the pilot profile.
 
 One-liner: Replicate the self-explanation simulatability advantage at small scale, then push it until it breaks.
 
-Hypothesis: The privileged self-knowledge effect, where a model's own explanation predicts its future answers better than an equally capable peer's explanation does, is real but domain-fragile. It should shrink or invert in domains where the true decision rule is one the model does not verbalize, such as a planted stealth cue.
+Hypothesis: Self-explanations help others predict a model only while the decision rule is verbalizable; planted stealth rules should shrink or reverse that edge.
 
 ## 2. Scope
 

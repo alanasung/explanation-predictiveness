@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "simulate"
 version = "0.1.0"
-description = "Where self-explanation simulatability breaks under stealth."
+description = "Test when self-explanations stop helping simulate model behavior."
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 license = { text = "MIT" }

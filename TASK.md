@@ -1,4 +1,4 @@
-# TASK.md — Where Privileged Self-Knowledge Breaks Down
+# TASK.md — When a Model's Own Story Stops Predicting Its Answers
 
 ID convention: `I##` infrastructure, `D##` data, `M##` modelling / hooks,
 `E##` experiments, `A##` ablations, `S##` sweeps, `R##` reporting.

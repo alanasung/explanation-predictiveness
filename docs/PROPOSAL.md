@@ -1,4 +1,4 @@
-# Limits of Privileged Self-Knowledge in Explanations
+# When a Model's Own Story Stops Predicting Its Answers
 
 **Target project.** Faithfulness, Self-Knowledge, and Introspection
 **Research areas.** Chain of thought; AI welfare; Behavioral evaluation of LLMs

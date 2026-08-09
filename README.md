@@ -1,15 +1,15 @@
 <p align="center">
-  <h1 align="center">Limits of Privileged Self-Knowledge in Explanations</h1>
-  <p align="center"><strong>Measure when a model's own explanation helps simulate its behavior — and when stealth cues make that advantage disappear.</strong></p>
+  <h1 align="center">When a Model's Own Story Stops Predicting Its Answers</h1>
+  <p align="center"><strong>Compare self- versus peer-explanations for simulatability, then stress the advantage with stealth decision rules the explanation is not supposed to mention.</strong></p>
   </p>
 
 ---
 
 ## Overview
 
-This repository implements experimental profiles for **Limits of Privileged Self-Knowledge in Explanations**. Config, caching, hooks, metrics, ablations, reporting, and CI are built for reproducible local pilots on small open-weight models.
+This repository implements experimental profiles for **When a Model's Own Story Stops Predicting Its Answers**. Config, caching, hooks, metrics, ablations, reporting, and CI are built for reproducible local pilots on small open-weight models.
 
-Hypothesis (one line): The privileged self-knowledge effect, where a model's own explanation predicts its future answers better than an equally capable peer's explanation does, is real but domain-fragile. It should shrink or invert in domains where the true decision rule is one the model does not verbalize, such as a planted stealth cue.
+Hypothesis (one line): Self-explanations help others predict a model only while the decision rule is verbalizable; planted stealth rules should shrink or reverse that edge.
 
 ## Motivation
 
@@ -86,8 +86,8 @@ registry and must pass the harness-validation script before any measured claim.
 ## Citation
 
 ```bibtex
-@misc{privileged_self_knowledge_pilot,
-  title        = {Limits of Privileged Self-Knowledge in Explanations},
+@misc{self_story_simulatability,
+  title        = {When a Model's Own Story Stops Predicting Its Answers},
   author       = {Alana Sung},
   year         = {2026},
   howpublished = {Technical report},

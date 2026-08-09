@@ -1,6 +1,6 @@
 # Related work
 
-This note situates **Limits of Privileged Self-Knowledge in Explanations** against related literature.
+This note situates **When a Model's Own Story Stops Predicting Its Answers** against related literature.
 
 ## Positioning
 

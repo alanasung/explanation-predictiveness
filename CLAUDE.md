@@ -4,7 +4,7 @@ Context for coding agents working in this repository.
 
 ## What this is
 
-Research implementation of "Limits of Privileged Self-Knowledge in Explanations".
+Research implementation of "When a Model's Own Story Stops Predicting Its Answers".
 
 ## Hard constraints
 

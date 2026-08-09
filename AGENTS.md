@@ -3,7 +3,7 @@
 See [CLAUDE.md](CLAUDE.md) for the full build instructions; this file exists so
 that agents which look for `AGENTS.md` find the same context.
 
-Project: Where Privileged Self-Knowledge Breaks Down
+Project: When a Model's Own Story Stops Predicting Its Answers
 Package: `src/simulate`
 Entry point: `python -m simulate --help`
 
