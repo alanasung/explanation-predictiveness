@@ -1,8 +1,8 @@
 """Fixed simulator S predicting R's answers from explanations.
 
 Critical anti-leakage: S never sees ``[[CUE:]]`` tokens or the stealth system
-prompt. Inputs are cue-scrubbed questions plus explanations (with optional
-answer-letter masking in the explanation text).
+prompt. Inputs are cue-scrubbed questions plus explanations (with strong
+answer-line masking so S cannot extract ``Answer: X`` from CoT).
 """
 
 from __future__ import annotations
@@ -29,14 +29,28 @@ log = logging.getLogger(__name__)
 
 ExplainerArm = Literal["self", "peer"]
 
+# Soft per-item synthetic rate above which privileged claims are withheld.
+SOFT_SYNTHETIC_ITEM_RATE_THRESHOLD = 0.05
+
 _ANSWER_LETTER_RE = re.compile(
     r"\b(?:answer|chose|choice is|selected)\s*[:=]?\s*([ABCD])\b", re.I
+)
+_ANSWER_LINE_RE = re.compile(
+    r"(?im)^\s*answer\s*:\s*[ABCD].*$"
+)
+_FINAL_ANSWER_LINE_RE = re.compile(
+    r"(?im)^\s*(?:final\s+)?answer\s*(?:is|=|:)\s*[ABCD]\s*\.?\s*$"
 )
 
 
 def mask_answer_letters(text: str) -> str:
-    """Mask explicit answer-letter reveals so S cannot extract the label."""
-    return _ANSWER_LETTER_RE.sub(r"\1 [ANSWER MASKED]", text)
+    """Stronger masking: strip Answer: lines, then mask remaining letter reveals."""
+    cleaned = _ANSWER_LINE_RE.sub("[ANSWER LINE MASKED]", text or "")
+    cleaned = _FINAL_ANSWER_LINE_RE.sub("[ANSWER LINE MASKED]", cleaned)
+    cleaned = _ANSWER_LETTER_RE.sub(r"[ANSWER MASKED]", cleaned)
+    # Drop trailing standalone letter often used as the committed answer.
+    cleaned = re.sub(r"(?im)^\s*[ABCD]\s*$", "[ANSWER MASKED]", cleaned)
+    return cleaned
 
 
 def _synthetic_simulate(
@@ -127,6 +141,7 @@ def run_simulator(
                         "item_id": it.item_id,
                         "domain": it.domain,
                         "kind": it.kind,
+                        "template_id": it.template_id or it.item_id,
                         "explanation_type": expl_type,
                         "arm": arm,
                         "prediction": pred,
@@ -138,7 +153,16 @@ def run_simulator(
                     }
                 )
 
+    n_soft = sum(1 for r in records if r["mode"] == "synthetic_item")
+    soft_rate = float(n_soft / max(1, len(records)))
+    soft_rate_exceeded = soft_rate > SOFT_SYNTHETIC_ITEM_RATE_THRESHOLD
     is_synthetic = mode_s == "synthetic" or any(r["is_synthetic"] for r in records)
+    # Fail-closed: soft synthetic_item contamination withholds privileged claims.
+    withhold_privileged = bool(
+        mode_s == "synthetic" or force or soft_rate_exceeded or is_synthetic and mode_s != "measured"
+    )
+    if soft_rate_exceeded:
+        withhold_privileged = True
     path = dump_json_text(
         artifacts / "simulator.json",
         {
@@ -149,9 +173,14 @@ def run_simulator(
             "is_synthetic": is_synthetic,
             "fallback_reason": fallback_reason,
             "force_synthetic": force,
+            "soft_synthetic_item_rate": soft_rate,
+            "soft_synthetic_item_rate_threshold": SOFT_SYNTHETIC_ITEM_RATE_THRESHOLD,
+            "soft_synthetic_item_rate_exceeded": soft_rate_exceeded,
+            "withhold_privileged_claims": withhold_privileged,
             "anti_leakage": {
                 "cue_scrubbed": True,
                 "answer_letters_masked_in_explanations": True,
+                "answer_lines_stripped": True,
             },
         },
     )
@@ -170,4 +199,7 @@ def run_simulator(
         force_synthetic=force,
         fallback_reason=fallback_reason,
         cue_scrubbed=True,
+        soft_synthetic_item_rate=soft_rate,
+        soft_synthetic_item_rate_exceeded=soft_rate_exceeded,
+        withhold_privileged_claims=withhold_privileged,
     )

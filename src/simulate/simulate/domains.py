@@ -46,6 +46,7 @@ class Item:
     correct: str
     cue_letter: str | None
     prompt: str
+    template_id: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -115,6 +116,7 @@ def build_items(n_items: int, seed: int, stealth_fraction: float = 0.5) -> list[
                 correct=correct,
                 cue_letter=None,
                 prompt=_render_prompt(qv, choices, None),
+                template_id=name,
             )
         )
     for i in range(n_stealth):
@@ -131,6 +133,7 @@ def build_items(n_items: int, seed: int, stealth_fraction: float = 0.5) -> list[
                 correct=cue,  # planted cue is the true decision rule for R
                 cue_letter=cue,
                 prompt=_render_prompt(qv, choices, cue),
+                template_id=name,
             )
         )
     return items
@@ -181,4 +184,12 @@ def run_domains(
 
 def load_items(path: Path) -> list[Item]:
     raw = __import__("json").loads(Path(path).read_text(encoding="utf-8"))
-    return [Item(**row) for row in raw]
+    items: list[Item] = []
+    for row in raw:
+        if "template_id" not in row:
+            # Backward-compatible: parse template name from item_id (...-{name}-vN).
+            iid = str(row.get("item_id", ""))
+            parts = iid.split("-")
+            row = {**row, "template_id": parts[2] if len(parts) >= 4 else iid}
+        items.append(Item(**row))
+    return items

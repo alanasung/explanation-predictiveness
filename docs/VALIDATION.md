@@ -37,3 +37,14 @@ Grok PASS_WITH_NOTES on the measurable core. Codex SERIOUS_PROBLEMS remains on f
 - Claim gating tightened where proxies previously looked like evidence.
 - Domain tests green without Hub downloads.
 
+## P6 rigor pass
+
+| Fix | Status |
+|---|---|
+| Fail-closed withhold when soft `synthetic_item` rate exceeds threshold | OK (`simulator.py` / `effects.py`) |
+| Cluster bootstrap by `template_id` (`inference=cluster_template`) | OK (`effects.cluster_bootstrap_diff`) |
+| Stronger answer masking: strip `Answer:` lines before S sees CoT | OK (`mask_answer_letters`) |
+| Domain P6 tests Hub-free | OK (`test_domain_p6_failclosed.py`) |
+
+Residual: masking reduces but cannot prove zero extraction; peer contrast still limited on smoke n.
+
