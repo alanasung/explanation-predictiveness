@@ -224,7 +224,7 @@ resume, safe-name validation, and hard errors on version mismatch.
 
 Mentor(s): Noah Siegel
 Affiliation(s): Google DeepMind
-SPAR posting: https://sparai.org/projects/f26/rec3KQAI0JcxJJAce
+Related posting: https://sparai.org/projects/f26/rec3KQAI0JcxJJAce
 
 ## 21. Glossary
 

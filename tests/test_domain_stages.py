@@ -6,5 +6,6 @@ def test_order_domains_first():
 def test_callable():
     assert all(callable(v) for v in STAGES.values())
 def test_no_notimplemented():
-    import inspect, simulate.stages as s
+    import inspect
+    import simulate.stages as s
     assert "NotImplementedError" not in inspect.getsource(s)

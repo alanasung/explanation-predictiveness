@@ -3,7 +3,7 @@
 **Target project.** Faithfulness, Self-Knowledge, and Introspection
 **Mentor.** Noah Siegel (Google DeepMind)
 **Research areas.** Chain of thought; AI welfare; Behavioral evaluation of LLMs
-**Posting.** https://sparai.org/projects/f26/rec3KQAI0JcxJJAce
+**Related posting.** https://sparai.org/projects/f26/rec3KQAI0JcxJJAce
 
 ## Summary
 

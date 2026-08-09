@@ -1,17 +1,14 @@
 <p align="center">
   <h1 align="center">Where Privileged Self-Knowledge Breaks Down</h1>
   <p align="center"><strong>Replicate the self-explanation simulatability advantage at small scale, then push it until it breaks.</strong></p>
-  <p align="center">SPAR Fall 2026 · <a href="https://sparai.org/projects/f26/rec3KQAI0JcxJJAce">Faithfulness, Self-Knowledge, and Introspection</a></p>
-</p>
+  </p>
 
 ---
 
 ## Overview
 
 This repository implements the pilot and full experimental profiles for
-**Where Privileged Self-Knowledge Breaks Down**. The shared engineering spine (config, caching, hooks, metrics,
-ablations, reporting, CI) is generated from a single template so all SPAR Fall
-2026 repos stay aligned on reproducibility.
+**Where Privileged Self-Knowledge Breaks Down**. Config, caching, hooks, metrics, ablations, reporting, and CI are built for reproducible local pilots on small open-weight models.
 
 Hypothesis (one line): The privileged self-knowledge effect, where a model's own explanation predicts its future answers better than an equally capable peer's explanation does, is real but domain-fragile. It should shrink or invert in domains where the true decision rule is one the model does not verbalize, such as a planted stealth cue.
 
@@ -87,20 +84,18 @@ registry and must pass the harness-validation script before any measured claim.
 
 ## Related work
 
-- SPAR Fall 2026 project posting: https://sparai.org/projects/f26/rec3KQAI0JcxJJAce
 - Complexity bar: Critical Data PRIMED-AI / RecursiveJEPA engineering standard
 
 ## Citation
 
 ```bibtex
-@misc{simulate_spar_f26,
+@misc{simulate_pilot,
   title        = {Where Privileged Self-Knowledge Breaks Down},
   author       = {Noah Siegel},
   year         = {2026},
-  howpublished = {SPAR Fall 2026},
+  howpublished = {Research pilot},
   note         = {Replicate the self-explanation simulatability advantage at small scale, then push it until it breaks.},
-  url          = {https://sparai.org/projects/f26/rec3KQAI0JcxJJAce}
-}
+  }
 ```
 
 ## License

@@ -4,8 +4,7 @@ Context for coding agents working in this repository.
 
 ## What this is
 
-A pilot research implementation of "Where Privileged Self-Knowledge Breaks Down" targeting the SPAR
-Fall 2026 project "Faithfulness, Self-Knowledge, and Introspection" (mentor: Noah Siegel,
+A pilot research implementation of "Where Privileged Self-Knowledge Breaks Down" for the research agenda "Faithfulness, Self-Knowledge, and Introspection" (mentor: Noah Siegel,
 Google DeepMind).
 
 ## Hard constraints

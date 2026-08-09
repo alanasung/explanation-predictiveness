@@ -92,7 +92,7 @@ def run_effects(
             )
         stealth_degradation = None
         priv_value = None
-        priv_ci = [None, None]
+        priv_ci: list[float | None] = [None, None]
     else:
         priv = bootstrap_diff(_acc(self_rows), _acc(peer_rows), n_boot=n_boot, seed=seed)
         priv_dict = _est_dict(priv)
