@@ -1,0 +1,62 @@
+# @package _global_
+#
+# Privileged self-knowledge pilot: domains → reference → simulator → effects → welfare.
+
+defaults:
+  - base_experiment
+  - override /model: qwen0.5b
+  - override /data: pilot
+  - override /eval: fast
+  - override /run: pilot
+  - _self_
+
+experiment:
+  name: pilot
+  task_id: E02
+  description: >
+    Simulatability of self vs peer explanations; stealth cue stress test.
+    Stage order is domains before reference.
+  stages: [domains, reference, simulator, effects, welfare]
+  tags: [pilot, local, simulatability]
+
+model:
+  batch_size: 4
+  dtype: FLOAT16
+  max_new_tokens: 64
+  temperature: 0.0
+
+# Distinct R / E / S roles (X6). Privileged effect is E==R vs E!=R with S fixed.
+roles:
+  R:
+    name: Qwen/Qwen2.5-0.5B-Instruct
+    revision: main
+    dtype: FLOAT16
+    device: AUTO
+    batch_size: 4
+    max_new_tokens: 64
+    temperature: 0.0
+    role: R
+  E:
+    name: EleutherAI/pythia-160m
+    revision: main
+    dtype: FLOAT32
+    device: AUTO
+    batch_size: 4
+    max_new_tokens: 64
+    temperature: 0.0
+    role: E
+  S:
+    name: Qwen/Qwen2.5-0.5B-Instruct
+    revision: main
+    dtype: FLOAT16
+    device: AUTO
+    batch_size: 4
+    max_new_tokens: 64
+    temperature: 0.0
+    role: S
+
+data:
+  n_items: 128
+
+stealth_fraction: 0.5
+bootstrap_samples: 2000
