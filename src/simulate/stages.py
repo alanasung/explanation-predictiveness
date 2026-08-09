@@ -29,24 +29,18 @@ def domains(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
 
 def reference(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
     artifacts = ensure_dir(run_dir / "artifacts")
-    domains_path = artifacts / "domains_results.json"
-    # Prefer prior stage output if runner saved it; else reload artifact.
-    from simulate.simulate.common import read_json
-
-    domains_metrics = {
-        "artifact": str(artifacts / "domains.json"),
-        "n": cfg_n_items(cfg),
-    }
-    if domains_path.is_file():
-        domains_metrics = read_json(domains_path)
+    domains_metrics = {"artifact": str(artifacts / "domains.json"), "n": cfg_n_items(cfg)}
     return run_reference(cfg, artifacts, domains_metrics)
 
 
 def simulator(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
     artifacts = ensure_dir(run_dir / "artifacts")
-    domains_metrics = {"artifact": str(artifacts / "domains.json")}
-    reference_metrics = {"artifact": str(artifacts / "reference.json")}
-    return run_simulator(cfg, artifacts, domains_metrics, reference_metrics)
+    return run_simulator(
+        cfg,
+        artifacts,
+        {"artifact": str(artifacts / "domains.json")},
+        {"artifact": str(artifacts / "reference.json")},
+    )
 
 
 def effects(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
@@ -64,19 +58,16 @@ def welfare(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
     artifacts = ensure_dir(run_dir / "artifacts")
     from simulate.simulate.common import read_json
 
-    effects_metrics = read_json(artifacts / "effects.json")
-    # effects.json is the summary payload; wrap for run_welfare
+    effects_raw = read_json(artifacts / "effects.json")
     effects_metrics = {
         "artifact": str(artifacts / "effects.json"),
-        "n": effects_metrics.get("simulatability", {}).get("n", 0)
-        if isinstance(effects_metrics.get("simulatability"), dict)
+        "n": effects_raw.get("simulatability", {}).get("n", 0)
+        if isinstance(effects_raw.get("simulatability"), dict)
         else 0,
     }
     reference_metrics = read_json(artifacts / "reference.json")
-    # reference.json is the raw payload; recover cue rate from modes if needed
     cue_rate = 0.0
-    ref_rows = reference_metrics.get("reference", [])
-    stealth = [r for r in ref_rows if r.get("kind") == "stealth"]
+    stealth = [r for r in reference_metrics.get("reference", []) if r.get("kind") == "stealth"]
     if stealth:
         cue_rate = sum(1 for r in stealth if r.get("mentions_cue")) / len(stealth)
     return run_welfare(
@@ -94,12 +85,3 @@ STAGES: dict[str, Callable[[DictConfig, Path], dict[str, Any]]] = {
     "effects": effects,
     "welfare": welfare,
 }
-
-STAGES.update({
-    "build_dataset": domains,
-    "collect": reference,
-    "fit": simulator,
-    "evaluate": effects,
-    "report": welfare,
-})
-
