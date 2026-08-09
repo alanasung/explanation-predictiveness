@@ -267,3 +267,7 @@ class Config:
     run: RunConfig = field(default_factory=RunConfig)
     # Measured R/E/S generations by default when weights load; smoke sets this true.
     force_synthetic: bool = False
+    # Domain knobs from experiment presets.
+    stealth_fraction: float = 0.5
+    bootstrap_samples: int = 2000
+    power_notes: str = ""
