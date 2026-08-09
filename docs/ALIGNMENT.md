@@ -1,15 +1,16 @@
 # ALIGNMENT — faithfulness-introspection
 
-## Codex GPT-5 Sol
+## Codex (p3)
 - Verdict: ALIGNED
-- Summary: The idea is a direct implementation of the mentor's first example question—testing self-explanation simulatability in stealth domains and comparing CoT with post-hoc explanations—with only optional welfare grounding and execution details missing.
+- Summary: Direct implementation of the mentor's first example—testing self-explanation simulatability in stealth domains and comparing CoT with post-hoc explanations—with welfare grounding present via the introspective-access index.
+- Detail: `orchestration/out/align/faithfulness-introspection.json`
 
-## Grok
+## Grok (p3 dual)
 - Verdict: ALIGNED
-- Summary: Directly implements the mentor's stealth/simulatability example idea with the right metric; welfare/sentience thread left unused but not replaced.
-- Detail: see `orchestration/out/grok/align/faithfulness-introspection.md` and `faithfulness-introspection.json`.
+- Summary: Measured R/E/S generations, domains→welfare DAG, operationalized stealth cue, and synthetic-withheld effects match the mentor’s simulatability question; only minor operational residuals remain.
+- Detail: `orchestration/out/grok/align/faithfulness-introspection.p3.md`
 
 ## Reconciliation
-Both ALIGNED (welfare thread optional). Proceed.
+Both ALIGNED. Proceed.
 
 Operating judgment: proceed.

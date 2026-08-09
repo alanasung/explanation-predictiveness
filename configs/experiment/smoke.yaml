@@ -23,5 +23,8 @@ experiment:
 data:
   n_items: 16
 
+# Smoke-only synthetic path. Pilot/full try measured R/E/S generations.
+force_synthetic: true
+
 cache:
   namespace: smoke

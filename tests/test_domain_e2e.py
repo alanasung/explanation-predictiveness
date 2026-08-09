@@ -5,8 +5,10 @@ from simulate.stages import STAGES
 def test_e2e(tmp_path):
     cfg = OmegaConf.create({
         "run": {"seed": 0},
+        "experiment": {"name": "smoke"},
+        "force_synthetic": True,
         "data": {"n_items": 8},
-        "model": {"name": "missing"},
+        "model": {"name": "missing", "max_new_tokens": 16},
         "roles": {"R": {"name": "R"}, "E": {"name": "E"}, "S": {"name": "S"}},
         "stealth_fraction": 0.5,
         "bootstrap_samples": 50,

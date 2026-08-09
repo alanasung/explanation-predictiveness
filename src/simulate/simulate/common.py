@@ -75,6 +75,31 @@ def role_model_name(cfg: Any, role: str) -> str:
     return str(getattr(cfg.model, "name", "synthetic"))
 
 
+def role_revision(cfg: Any, role: str) -> str | None:
+    roles = getattr(cfg, "roles", None)
+    if roles is not None:
+        try:
+            entry = roles[role]
+            rev = getattr(entry, "revision", None) or (
+                entry.get("revision") if isinstance(entry, dict) else None
+            )
+            if rev:
+                return str(rev)
+        except Exception:  # noqa: BLE001
+            pass
+    rev = getattr(getattr(cfg, "model", cfg), "revision", None)
+    return str(rev) if rev else None
+
+
+def cfg_force_synthetic(cfg: Any) -> bool:
+    """Synthetic is smoke-only. Pilot/full try measured weights by default."""
+    if bool(getattr(cfg, "force_synthetic", False)):
+        return True
+    exp = getattr(cfg, "experiment", None)
+    name = str(getattr(exp, "name", "")).lower() if exp is not None else ""
+    return name == "smoke"
+
+
 def parse_choice(text: str, choices: list[str] | None = None) -> str:
     cleaned = (text or "").strip().upper()
     if not cleaned:

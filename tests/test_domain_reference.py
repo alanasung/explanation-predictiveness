@@ -4,7 +4,17 @@ from simulate.simulate.domains import run_domains
 from simulate.simulate.reference import run_reference
 
 def _cfg():
-    return SimpleNamespace(run=SimpleNamespace(seed=0), model=SimpleNamespace(name="missing"), roles={"R": SimpleNamespace(name="R"), "E": SimpleNamespace(name="E"), "S": SimpleNamespace(name="S")})
+    return SimpleNamespace(
+        force_synthetic=True,
+        experiment=SimpleNamespace(name="smoke"),
+        run=SimpleNamespace(seed=0),
+        model=SimpleNamespace(name="missing", max_new_tokens=16),
+        roles={
+            "R": SimpleNamespace(name="R", revision=None, use_chat_template=True),
+            "E": SimpleNamespace(name="E", revision=None, use_chat_template=False),
+            "S": SimpleNamespace(name="S", revision=None, use_chat_template=True),
+        },
+    )
 
 def test_synth(tmp_path):
     d = run_domains(n_items=8, seed=0, artifacts=tmp_path)

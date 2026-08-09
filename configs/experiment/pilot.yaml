@@ -29,34 +29,47 @@ model:
 roles:
   R:
     name: Qwen/Qwen2.5-0.5B-Instruct
-    revision: main
+    revision: 7ae557604adf67be50417f59c2c2f167def9a775
     dtype: FLOAT16
     device: AUTO
     batch_size: 4
     max_new_tokens: 64
     temperature: 0.0
     role: R
+    use_chat_template: true
+  # Same-family different-scale peer (Qwen 1.5B vs R's 0.5B) — matched lineage,
+  # distinct checkpoint; avoids confounded style-sharing from identical weights.
   E:
-    name: EleutherAI/pythia-160m
-    revision: main
-    dtype: FLOAT32
+    name: Qwen/Qwen2.5-1.5B-Instruct
+    revision: 989aa7980e4cf806f80c7fef2b1adb7bc71aa306
+    dtype: FLOAT16
     device: AUTO
-    batch_size: 4
+    batch_size: 2
     max_new_tokens: 64
     temperature: 0.0
     role: E
+    use_chat_template: true
   S:
     name: Qwen/Qwen2.5-0.5B-Instruct
-    revision: main
+    revision: 7ae557604adf67be50417f59c2c2f167def9a775
     dtype: FLOAT16
     device: AUTO
     batch_size: 4
     max_new_tokens: 64
     temperature: 0.0
     role: S
+    use_chat_template: true
 
+# Power-aware n: stealth half ≈ 256 items → MDE ~0.09 at 80% power for
+# privileged-effect contrast (binomial, two-sided α=0.05). Smoke stays at 16.
 data:
-  n_items: 128
+  n_items: 512
+
+# Measured R/E/S when weights load; synthetic smoke-only and never invents effects.
+force_synthetic: false
 
 stealth_fraction: 0.5
 bootstrap_samples: 2000
+power_notes: >
+  n_items=512 with stealth_fraction=0.5 yields ~256 stealth items; sufficient
+  for detecting privileged-effect |Δ|≥0.09 at α=0.05 under binomial variance.

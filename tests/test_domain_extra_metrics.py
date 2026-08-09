@@ -52,7 +52,7 @@ def test_effects_ci_order(tmp_path):
     from simulate.simulate.reference import run_reference
     from simulate.simulate.simulator import run_simulator
     from simulate.simulate.effects import run_effects
-    cfg = SimpleNamespace(run=SimpleNamespace(seed=0), model=SimpleNamespace(name="m"), roles={"R": SimpleNamespace(name="R"), "E": SimpleNamespace(name="E"), "S": SimpleNamespace(name="S")})
+    cfg = SimpleNamespace(force_synthetic=True, experiment=SimpleNamespace(name="smoke"), run=SimpleNamespace(seed=0), model=SimpleNamespace(name="m", max_new_tokens=16), roles={"R": SimpleNamespace(name="R"), "E": SimpleNamespace(name="E"), "S": SimpleNamespace(name="S")})
     d=run_domains(n_items=8, seed=0, artifacts=tmp_path)
     r=run_reference(cfg, tmp_path, d)
     s=run_simulator(cfg, tmp_path, d, r)
@@ -65,7 +65,7 @@ def test_simulator_n_multiple_of_items(tmp_path):
     from simulate.simulate.domains import run_domains
     from simulate.simulate.reference import run_reference
     from simulate.simulate.simulator import run_simulator
-    cfg = SimpleNamespace(run=SimpleNamespace(seed=0), model=SimpleNamespace(name="m"), roles={"R": SimpleNamespace(name="R"), "E": SimpleNamespace(name="E"), "S": SimpleNamespace(name="S")})
+    cfg = SimpleNamespace(force_synthetic=True, experiment=SimpleNamespace(name="smoke"), run=SimpleNamespace(seed=0), model=SimpleNamespace(name="m", max_new_tokens=16), roles={"R": SimpleNamespace(name="R"), "E": SimpleNamespace(name="E"), "S": SimpleNamespace(name="S")})
     d=run_domains(n_items=8, seed=0, artifacts=tmp_path)
     r=run_reference(cfg, tmp_path, d)
     s=run_simulator(cfg, tmp_path, d, r)
