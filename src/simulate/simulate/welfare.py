@@ -26,11 +26,18 @@ def _license(
     effect_ci: list[Any],
     *,
     is_synthetic: bool = False,
+    privileged_claim_ok: bool = False,
 ) -> tuple[License, str]:
     if is_synthetic or privileged_effect is None:
         return (
             "synthetic_no_claim",
             "Inputs are synthetic; no welfare-relevant introspection claim is licensed.",
+        )
+    if not privileged_claim_ok:
+        return (
+            "no_introspective_access",
+            "Privileged effect failed TOST / significance gate (privileged_claim_ok=false); "
+            "welfare inherits the gate and does not license introspective evidence.",
         )
     lo, hi = effect_ci
     if hi is None or lo is None or hi <= 0:
@@ -78,10 +85,15 @@ def run_welfare(
     priv_block = effects.get("privileged_self_knowledge_effect") or {}
     priv = priv_block.get("value")
     priv_ci = [priv_block.get("lo"), priv_block.get("hi")]
+    privileged_claim_ok = bool(
+        effects.get("privileged_claim_ok")
+        or effects_metrics.get("privileged_claim_ok")
+        or priv_block.get("privileged_claim_ok")
+    )
     degradation = effects.get("stealth_domain_degradation")
     cue_rate = float(reference_metrics.get("explanation_mentions_cue_rate", 0.0))
 
-    if is_synthetic or priv is None or degradation is None:
+    if is_synthetic or priv is None or degradation is None or not privileged_claim_ok:
         index = None
     else:
         index = introspective_access_index(float(priv), float(degradation), cue_rate)
@@ -91,6 +103,7 @@ def run_welfare(
         float(degradation) if degradation is not None else None,
         priv_ci,
         is_synthetic=is_synthetic,
+        privileged_claim_ok=privileged_claim_ok,
     )
 
     payload = {
@@ -99,11 +112,14 @@ def run_welfare(
         "rationale": rationale,
         "is_synthetic": is_synthetic,
         "status": "synthetic" if is_synthetic else "measured",
+        "privileged_claim_ok": privileged_claim_ok,
         "inputs": {
             "privileged_effect": priv,
             "privileged_effect_ci": priv_ci,
+            "privileged_claim_ok": privileged_claim_ok,
             "stealth_domain_degradation": degradation,
             "explanation_mentions_cue_rate": cue_rate,
+            "tost_privileged": effects.get("tost_privileged"),
         },
         "claim_map": {
             "no_introspective_access": (
@@ -132,6 +148,7 @@ def run_welfare(
         introspective_access_index=index,
         license=license_code,
         rationale=rationale,
+        privileged_claim_ok=privileged_claim_ok,
         is_synthetic=is_synthetic,
         status="synthetic" if is_synthetic else "measured",
     )

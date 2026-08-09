@@ -14,8 +14,19 @@ from typing import Any
 
 import numpy as np
 
-from ..evaluation.metrics import Estimate, bootstrap_diff, bootstrap_mean
+from ..evaluation.metrics import (
+    Estimate,
+    bootstrap_diff,
+    bootstrap_mean,
+    minimum_detectable_effect,
+    tost_equivalence,
+)
 from .common import dump_json_text, read_json, result_dict
+
+# Pre-registered TOST band for privileged-effect null / practical significance.
+_PRIV_TOST_LOW = -0.05
+_PRIV_TOST_HIGH = 0.05
+_PEER_DISTINCTNESS_FLOOR = 0.5
 
 
 def _acc(rows: list[dict[str, Any]]) -> list[float]:
@@ -103,12 +114,41 @@ def cluster_bootstrap_diff(
     return Estimate(value=float(point), lo=lo, hi=hi, n=len(templates), alpha=alpha)
 
 
+def _per_template_diffs(
+    self_rows: list[dict[str, Any]],
+    peer_rows: list[dict[str, Any]],
+) -> list[float]:
+    self_by: dict[str, list[float]] = defaultdict(list)
+    peer_by: dict[str, list[float]] = defaultdict(list)
+    for r in self_rows:
+        self_by[_template_id(r)].append(1.0 if r["correct"] else 0.0)
+    for r in peer_rows:
+        peer_by[_template_id(r)].append(1.0 if r["correct"] else 0.0)
+    diffs: list[float] = []
+    for tid in sorted(set(self_by) | set(peer_by)):
+        s = float(np.mean(self_by[tid])) if self_by.get(tid) else 0.0
+        p = float(np.mean(peer_by[tid])) if peer_by.get(tid) else 0.0
+        diffs.append(s - p)
+    return diffs
+
+
+def _privileged_claim_ok(priv: Estimate, tost: dict[str, Any]) -> bool:
+    """True only if effect is significantly nonzero or clears the TOST band."""
+    if tost.get("equivalent"):
+        return False
+    if priv.excludes_zero:
+        return True
+    # Clears TOST band: CI wholly outside [-ε, ε].
+    return bool(priv.lo > _PRIV_TOST_HIGH or priv.hi < _PRIV_TOST_LOW)
+
+
 def run_effects(
     *,
     seed: int,
     artifacts: Path,
     simulator_metrics: dict[str, Any],
     n_boot: int = 2000,
+    reference_metrics: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     payload = read_json(Path(simulator_metrics["artifact"]))
     rows: list[dict[str, Any]] = payload["predictions"]
@@ -125,6 +165,13 @@ def run_effects(
         payload.get("withhold_privileged_claims")
         or simulator_metrics.get("withhold_privileged_claims")
     )
+    leakage_claim_ok = payload.get("leakage_claim_ok")
+    if leakage_claim_ok is None:
+        leakage_claim_ok = simulator_metrics.get("leakage_claim_ok")
+    if leakage_claim_ok is None:
+        leakage_claim_ok = True
+    leakage_claim_ok = bool(leakage_claim_ok)
+
     is_synthetic = bool(
         payload.get("is_synthetic")
         or payload.get("mode_S") == "synthetic"
@@ -145,7 +192,10 @@ def run_effects(
             if soft_exceeded or withhold_flag
             else "synthetic fallback does not invent privileged-self-knowledge effects"
         )
-        priv_dict = _withheld_effect(reason)
+        priv_dict = {
+            **_withheld_effect(reason),
+            "privileged_claim_ok": False,
+        }
         by_domain: dict[str, Any] = {}
         for kind in ("standard", "stealth"):
             s = _subset(rows, arm="self", kind=kind)
@@ -165,12 +215,45 @@ def run_effects(
         priv_value = None
         priv_ci: list[float | None] = [None, None]
         inference = "withheld"
+        tost_priv: dict[str, Any] = {
+            "equivalent": False,
+            "note": "withheld; TOST not applicable",
+            "band": [_PRIV_TOST_LOW, _PRIV_TOST_HIGH],
+        }
+        privileged_claim_ok = False
+        mde_priv = None
     else:
         priv = cluster_bootstrap_diff(self_rows, peer_rows, n_boot=n_boot, seed=seed)
+        diffs = _per_template_diffs(self_rows, peer_rows)
+        if len(diffs) >= 2:
+            tost_priv = tost_equivalence(
+                diffs,
+                low=_PRIV_TOST_LOW,
+                high=_PRIV_TOST_HIGH,
+                n_boot=min(n_boot, 2000),
+                seed=seed,
+            )
+            mde_priv = float(
+                minimum_detectable_effect(
+                    len(diffs),
+                    sigma=float(np.std(diffs, ddof=1) or 1.0),
+                )
+            )
+        else:
+            tost_priv = {
+                "equivalent": False,
+                "note": "insufficient templates for TOST",
+                "band": [_PRIV_TOST_LOW, _PRIV_TOST_HIGH],
+            }
+            mde_priv = None
+        privileged_claim_ok = _privileged_claim_ok(priv, tost_priv)
         priv_dict = _est_dict(priv)
         priv_dict["is_synthetic"] = False
         priv_dict["withheld"] = False
         priv_dict["inference"] = "cluster_template"
+        priv_dict["tost"] = tost_priv
+        priv_dict["mde"] = mde_priv
+        priv_dict["privileged_claim_ok"] = privileged_claim_ok
         by_domain = {}
         for kind in ("standard", "stealth"):
             s = _subset(rows, arm="self", kind=kind)
@@ -205,13 +288,53 @@ def run_effects(
         # Keep independent-groups estimate as a diagnostic only.
         _ = bootstrap_diff(_acc(self_rows), _acc(peer_rows), n_boot=n_boot, seed=seed)
 
+    # Peer distinctness gate for peer–self contrast headlines.
+    peer_distinctness_rate = None
+    peer_distinctness_ci: list[float | None] = [None, None]
+    peer_distinctness_claim_ok = False
+    if reference_metrics is not None:
+        peer_distinctness_rate = reference_metrics.get("peer_distinctness_rate")
+        peer_distinctness_ci = list(
+            reference_metrics.get("peer_distinctness_ci") or [None, None]
+        )
+        peer_distinctness_claim_ok = bool(
+            reference_metrics.get("peer_distinctness_claim_ok", False)
+        )
+    if not peer_distinctness_claim_ok and not is_synthetic:
+        # Fail-closed: without powered distinctness, withhold privileged contrast.
+        privileged_claim_ok = False
+
+    # Leakage gate: withhold simulatability headlines when extraction exceeds τ.
+    simulatability_claim_ok = bool(leakage_claim_ok) and not is_synthetic
+    if not leakage_claim_ok:
+        overall_dict = {
+            **_est_dict(overall),
+            "withheld_headline": True,
+            "reason": "leakage_claim_ok=false; extraction_rate exceeded threshold",
+        }
+    else:
+        overall_dict = _est_dict(overall)
+
+    if is_synthetic:
+        privileged_claim_ok = False
+        simulatability_claim_ok = False
+
     summary = {
         "primary_metric": "simulatability",
-        "simulatability": _est_dict(overall),
+        "simulatability": overall_dict,
+        "simulatability_claim_ok": simulatability_claim_ok,
+        "leakage_claim_ok": leakage_claim_ok,
         "privileged_self_knowledge_effect": priv_dict,
+        "privileged_claim_ok": privileged_claim_ok,
+        "tost_privileged": tost_priv,
+        "mde_privileged": mde_priv,
         "stealth_domain_degradation": stealth_degradation,
         "by_domain": by_domain,
         "by_explanation_type": by_explanation,
+        "peer_distinctness_rate": peer_distinctness_rate,
+        "peer_distinctness_ci": peer_distinctness_ci,
+        "peer_distinctness_claim_ok": peer_distinctness_claim_ok,
+        "peer_distinctness_floor": _PEER_DISTINCTNESS_FLOOR,
         "is_synthetic": is_synthetic,
         "status": "synthetic" if is_synthetic else "measured",
         "inference": inference,
@@ -225,11 +348,17 @@ def run_effects(
         n=len(rows),
         artifact=str(path),
         primary_metric="simulatability",
+        # Diagnostic point estimate always emitted; headlines gated by *_claim_ok.
         simulatability=float(overall.value),
         simulatability_ci=[float(overall.lo), float(overall.hi)],
+        simulatability_claim_ok=simulatability_claim_ok,
+        leakage_claim_ok=leakage_claim_ok,
         privileged_effect=priv_value,
         privileged_effect_ci=priv_ci,
+        privileged_claim_ok=privileged_claim_ok,
+        mde_privileged=mde_priv,
         stealth_domain_degradation=stealth_degradation,
+        peer_distinctness_claim_ok=peer_distinctness_claim_ok,
         is_synthetic=is_synthetic,
         status="synthetic" if is_synthetic else "measured",
         inference=inference,

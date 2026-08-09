@@ -48,3 +48,15 @@ Grok PASS_WITH_NOTES on the measurable core. Codex SERIOUS_PROBLEMS remains on f
 
 Residual: masking reduces but cannot prove zero extraction; peer contrast still limited on smoke n.
 
+## P7 rigor pass (stats + claim contracts)
+
+| Fix | Status |
+|---|---|
+| TOST on privileged-effect CI; `privileged_claim_ok` only if significant or clears band | OK (`effects.py`) |
+| Welfare inherits `privileged_claim_ok` gate | OK (`welfare.py`) |
+| Leakage audit after Answer masking; `leakage_claim_ok` gates simulatability headlines | OK (`simulator.py`) |
+| Peer distinctness rate + CI; peer–self contrast requires floor on measured peer | OK (`reference.py`, wired into `effects.py`) |
+| Hub-free domain P7 tests | OK (`test_domain_p7_stats_claims.py`) |
+
+Residual: masking audit is heuristic (not proof of zero leakage); licensed corpora still out of scope.
+

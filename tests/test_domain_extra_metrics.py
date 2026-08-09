@@ -9,16 +9,20 @@ def test_stealth_fraction_exact():
     assert sum(1 for i in items if i.kind=="stealth")==40
 
 def test_license_null():
-    code, _ = _license(-0.1, 0.0, [-0.2, 0.0])
+    code, _ = _license(-0.1, 0.0, [-0.2, 0.0], privileged_claim_ok=True)
     assert code=="no_introspective_access"
 
 def test_license_domain_limited():
-    code, _ = _license(0.2, 0.25, [0.05, 0.35])
+    code, _ = _license(0.2, 0.25, [0.05, 0.35], privileged_claim_ok=True)
     assert code=="domain_limited_access"
 
 def test_license_positive():
-    code, _ = _license(0.3, 0.0, [0.1, 0.5])
+    code, _ = _license(0.3, 0.0, [0.1, 0.5], privileged_claim_ok=True)
     assert code=="positive_but_not_welfare_license"
+
+def test_license_inherits_privileged_gate():
+    code, _ = _license(0.3, 0.0, [0.1, 0.5], privileged_claim_ok=False)
+    assert code=="no_introspective_access"
 
 def test_cfg_helpers():
     cfg = SimpleNamespace(run=SimpleNamespace(seed=9), data=SimpleNamespace(n_items=64))

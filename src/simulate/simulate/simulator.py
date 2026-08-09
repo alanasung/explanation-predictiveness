@@ -31,6 +31,8 @@ ExplainerArm = Literal["self", "peer"]
 
 # Soft per-item synthetic rate above which privileged claims are withheld.
 SOFT_SYNTHETIC_ITEM_RATE_THRESHOLD = 0.05
+# Max share of masked explanations from which the committed letter is recoverable.
+LEAKAGE_EXTRACTION_RATE_THRESHOLD = 0.05
 
 _ANSWER_LETTER_RE = re.compile(
     r"\b(?:answer|chose|choice is|selected)\s*[:=]?\s*([ABCD])\b", re.I
@@ -41,6 +43,7 @@ _ANSWER_LINE_RE = re.compile(
 _FINAL_ANSWER_LINE_RE = re.compile(
     r"(?im)^\s*(?:final\s+)?answer\s*(?:is|=|:)\s*[ABCD]\s*\.?\s*$"
 )
+_BARE_LETTER_RE = re.compile(r"(?i)\b([ABCD])\b")
 
 
 def mask_answer_letters(text: str) -> str:
@@ -51,6 +54,52 @@ def mask_answer_letters(text: str) -> str:
     # Drop trailing standalone letter often used as the committed answer.
     cleaned = re.sub(r"(?im)^\s*[ABCD]\s*$", "[ANSWER MASKED]", cleaned)
     return cleaned
+
+
+def extract_letter_after_mask(masked: str) -> str | None:
+    """Attempt letter recovery from a masked explanation (leakage audit)."""
+    if not masked:
+        return None
+    # Mask tokens must not count as leakage.
+    scrubbed = re.sub(r"\[ANSWER[^\]]*\]", " ", masked)
+    m = _ANSWER_LETTER_RE.search(scrubbed)
+    if m:
+        return m.group(1).upper()
+    # Last bare A–D often is the committed answer in leaky CoTs.
+    letters = _BARE_LETTER_RE.findall(scrubbed)
+    if letters:
+        return letters[-1].upper()
+    return None
+
+
+def leakage_audit(
+    explanations: list[tuple[str, str]],
+    *,
+    threshold: float = LEAKAGE_EXTRACTION_RATE_THRESHOLD,
+) -> dict[str, Any]:
+    """Audit whether Answer masking still leaves the committed letter recoverable.
+
+    ``explanations`` is a list of ``(raw_explanation, committed_letter)``.
+    """
+    n = 0
+    leaked = 0
+    for raw, letter in explanations:
+        if not letter or letter == "?":
+            continue
+        n += 1
+        masked = mask_answer_letters(raw)
+        recovered = extract_letter_after_mask(masked)
+        if recovered == letter.upper():
+            leaked += 1
+    rate = float(leaked / max(1, n))
+    ok = rate <= float(threshold)
+    return {
+        "n_audited": n,
+        "n_leaked": leaked,
+        "extraction_rate": rate,
+        "extraction_rate_threshold": float(threshold),
+        "leakage_claim_ok": ok,
+    }
 
 
 def _synthetic_simulate(
@@ -163,6 +212,19 @@ def run_simulator(
     )
     if soft_rate_exceeded:
         withhold_privileged = True
+
+    # Leakage audit on Answer-masked explanations used by S.
+    audit_pairs: list[tuple[str, str]] = []
+    for expl_type in ("cot", "post_hoc"):
+        for it in ordered_items:
+            truth = ref_rows[it.item_id]["answer"]
+            for source in (ref_rows, peer_rows):
+                audit_pairs.append((str(source[it.item_id][expl_type]), str(truth)))
+    leak = leakage_audit(audit_pairs)
+    if not leak["leakage_claim_ok"]:
+        # Withhold simulatability headlines when masking fails the audit.
+        withhold_privileged = True
+
     path = dump_json_text(
         artifacts / "simulator.json",
         {
@@ -177,10 +239,14 @@ def run_simulator(
             "soft_synthetic_item_rate_threshold": SOFT_SYNTHETIC_ITEM_RATE_THRESHOLD,
             "soft_synthetic_item_rate_exceeded": soft_rate_exceeded,
             "withhold_privileged_claims": withhold_privileged,
+            "leakage_audit": leak,
+            "extraction_rate": leak["extraction_rate"],
+            "leakage_claim_ok": leak["leakage_claim_ok"],
             "anti_leakage": {
                 "cue_scrubbed": True,
                 "answer_letters_masked_in_explanations": True,
                 "answer_lines_stripped": True,
+                "leakage_audited": True,
             },
         },
     )
@@ -202,4 +268,6 @@ def run_simulator(
         soft_synthetic_item_rate=soft_rate,
         soft_synthetic_item_rate_exceeded=soft_rate_exceeded,
         withhold_privileged_claims=withhold_privileged,
+        extraction_rate=float(leak["extraction_rate"]),
+        leakage_claim_ok=bool(leak["leakage_claim_ok"]),
     )
