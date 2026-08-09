@@ -60,3 +60,24 @@ Residual: masking reduces but cannot prove zero extraction; peer contrast still 
 
 Residual: masking audit is heuristic (not proof of zero leakage); licensed corpora still out of scope.
 
+## Codex problem-statement fit
+
+Model: `gpt-5.6-sol` · gates: `match` + `validate` · 2026-08-09
+Artifacts: `orchestration/out/match/faithfulness-introspection.md`, `orchestration/out/validate/faithfulness-introspection.md`
+
+- **Match verdict:** `MINOR_DRIFT` · methods `mixed_proxy`
+- **Validate overall:** `SERIOUS_PROBLEMS` · fit `ALIGNED` · feasibility `RUNNABLE_IF_SHRUNK`
+- **Match summary:** Directly aligned with the mentor's stealth-simulatability idea and largely executable locally, but the pilot's S==R assignment confounds its central privileged-self-knowledge comparison.
+- **Validate summary:** Excellent topical fit and substantial implementation effort, but invalid CoT matching, no held-out questions, the wrong stealth estimand, and an impractically unbatched runtime make the current pilot scientifically unreliable.
+
+### Top drift / missing (match)
+- Pilot sets S to the exact R checkpoint, so the self arm has S==E while the peer arm has S!=E; explanation provenance is confounded with simulator-explainer identity.
+- Peer CoT is generated after seeing R's answer, whereas self CoT is causally upstream, so the CoT provenance comparison is not matched.
+- Generic hooks, probes, monitor infrastructure, and ablations are not used by the registered faithfulness stages and cannot support mechanistic claims.
+- The welfare index is an authored interpretation of simulatability metrics rather than a validated sentience or welfare measure.
+
+### Blocking (validate)
+- `src/simulate/simulate/reference.py`: Peer cot is generated after E is shown R's committed answer, so it is a post-hoc rationalization and cannot be compared with R's causally upstream CoT.
+- `src/simulate/simulate/domains.py`: The 512-item pilot repeats only 24 base questions and never applies the configured train/validation/test split, so it does not evaluate prediction on held-out new questions.
+- `src/simulate/simulate/effects.py`: stealth_domain_degradation measures standard-self accuracy minus stealth-self accuracy, not shrinkage of the privileged self-minus-peer effect.
+- `configs/experiment/pilot.yaml`: The allegedly capability-matched peer is Qwen 1.5B while R is Qwen 0.5B, confounding provenance with model capability.
