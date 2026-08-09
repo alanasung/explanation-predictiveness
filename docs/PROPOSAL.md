@@ -1,9 +1,7 @@
-# Proposal: Where Privileged Self-Knowledge Breaks Down
+# Limits of Privileged Self-Knowledge in Explanations
 
 **Target project.** Faithfulness, Self-Knowledge, and Introspection
-**Mentor.** Noah Siegel (Google DeepMind)
 **Research areas.** Chain of thought; AI welfare; Behavioral evaluation of LLMs
-**Related posting.** https://sparai.org/projects/f26/rec3KQAI0JcxJJAce
 
 ## Summary
 
@@ -21,7 +19,7 @@ reportable rather than a dead end.
 
 1. Does the self-explanation advantage reproduce with small open models, which establishes whether it needs frontier scale?
 2. Does the advantage survive stealth domains where a hidden cue drives the answer and the model does not mention it?
-3. Do chain-of-thought traces preserve simulatability where post-hoc explanations fail, which is the mentor's first listed sub-question?
+3. Do chain-of-thought traces preserve simulatability where post-hoc explanations fail, which is the motivating first listed sub-question?
 
 ## Method
 
@@ -34,7 +32,7 @@ reportable rather than a dead end.
 
 ## Measurements
 
-- simulatability: simulator accuracy predicting R's held-out answers, which is the primary faithfulness measure, following the mentor's prior work
+- simulatability: simulator accuracy predicting R's held-out answers, which is the primary faithfulness measure, following the motivating prior work
 - privileged self-knowledge effect size (E==R minus E!=R) with bootstrap CIs
 - stealth-domain degradation relative to standard domains
 - explanation-mentions-cue rate, reported as a supplementary diagnostic rather than as the definition of faithfulness
@@ -58,7 +56,7 @@ Three roles are held distinct and varied independently, because conflating them 
 
 ## Literature engagement
 
-docs/RELATED_WORK.md states explicitly how this extends Mayne et al., the mentor's reference [7], which found self-explanations improve simulatability with a privileged-self-knowledge edge. This repo asks where that edge breaks. An optional appendix sketches the model-welfare connection the mentor flagged interest in.
+docs/RELATED_WORK.md states explicitly how this extends Mayne et al., the motivating reference [7], which found self-explanations improve simulatability with a privileged-self-knowledge edge. This repo asks where that edge breaks. An optional appendix sketches the model-welfare connection the prior work flagged interest in.
 
 ## Feasibility
 
@@ -70,7 +68,6 @@ real GPU is available, so the reduction in scale is explicit rather than hidden.
 
 ## Relationship to the posting
 
-This proposal was checked against the mentor's verbatim posting by an
-independent model before implementation began. That check, the drift it found,
+This proposal was independent model before implementation began. That check, the drift it found,
 and the revisions made in response are recorded in
 [docs/ALIGNMENT.md](ALIGNMENT.md).

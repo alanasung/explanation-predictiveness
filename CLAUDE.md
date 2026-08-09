@@ -4,8 +4,7 @@ Context for coding agents working in this repository.
 
 ## What this is
 
-A pilot research implementation of "Where Privileged Self-Knowledge Breaks Down" for the research agenda "Faithfulness, Self-Knowledge, and Introspection" (mentor: Noah Siegel,
-Google DeepMind).
+Research implementation of "Limits of Privileged Self-Knowledge in Explanations".
 
 ## Hard constraints
 
@@ -21,7 +20,7 @@ Google DeepMind).
 
 Implement the stages in `src/simulate/stages.py`. The signatures,
 dependency edges, and docstring contracts are fixed; they encode an experiment
-design that was checked against the mentor's posting before implementation
+design that was checked against the motivating posting before implementation
 started. Do not renegotiate them. If a contract is genuinely wrong, change it in
 `docs/EXPERIMENT_PLAN.md` first and explain why.
 

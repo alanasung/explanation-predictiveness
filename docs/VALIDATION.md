@@ -31,7 +31,7 @@
 ## Reconciliation
 Grok PASS_WITH_NOTES on the measurable core. Codex SERIOUS_PROBLEMS remains on frontier causal-CoT purity and cluster inference — recorded as residual notes, not missing stages. Domain tests pass (46).
 
-## P5 rigor pass (measured mentor-critical paths)
+## P5 rigor pass (measured prior work-critical paths)
 
 - Live / measured paths preferred; synthetic remains smoke-only with honesty stamps.
 - Claim gating tightened where proxies previously looked like evidence.

@@ -1,7 +1,6 @@
 # Related work
 
-This note situates **Where Privileged Self-Knowledge Breaks Down** against the mentor-linked literature for
-[Faithfulness, Self-Knowledge, and Introspection](https://sparai.org/projects/f26/rec3KQAI0JcxJJAce).
+This note situates **Limits of Privileged Self-Knowledge in Explanations** against related literature.
 
 ## Positioning
 
@@ -25,7 +24,7 @@ is written.
 
 ### Slot A — Primary motivating paper
 
-Summary of the mentor's main citation and the exact claim this repo tests.
+Summary of the main related citation and the exact claim this repo tests.
 
 ### Slot B — Closest prior codebase
 
@@ -44,11 +43,6 @@ Shortcut learning, eval awareness, circular labels, underpowered nulls.
 
 Where this design intentionally diverges from common practice, with the
 falsification condition.
-
-## Mentors and affiliations
-
-- Mentor(s): Noah Siegel
-- Affiliation(s): Google DeepMind
 
 ## Bibliography placeholders
 

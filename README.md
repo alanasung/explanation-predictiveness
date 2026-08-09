@@ -1,18 +1,15 @@
 <p align="center">
-  <h1 align="center">Where Privileged Self-Knowledge Breaks Down</h1>
-  <p align="center"><strong>Replicate the self-explanation simulatability advantage at small scale, then push it until it breaks.</strong></p>
+  <h1 align="center">Limits of Privileged Self-Knowledge in Explanations</h1>
+  <p align="center"><strong>Measure when a model's own explanation helps simulate its behavior — and when stealth cues make that advantage disappear.</strong></p>
   </p>
 
 ---
 
 ## Overview
 
-This repository implements the pilot and full experimental profiles for
-**Where Privileged Self-Knowledge Breaks Down**. Config, caching, hooks, metrics, ablations, reporting, and CI are built for reproducible local pilots on small open-weight models.
+This repository implements experimental profiles for **Limits of Privileged Self-Knowledge in Explanations**. Config, caching, hooks, metrics, ablations, reporting, and CI are built for reproducible local pilots on small open-weight models.
 
 Hypothesis (one line): The privileged self-knowledge effect, where a model's own explanation predicts its future answers better than an equally capable peer's explanation does, is real but domain-fragile. It should shrink or invert in domains where the true decision rule is one the model does not verbalize, such as a planted stealth cue.
-
-Mentors: Noah Siegel (Google DeepMind).
 
 ## Motivation
 
@@ -89,13 +86,12 @@ registry and must pass the harness-validation script before any measured claim.
 ## Citation
 
 ```bibtex
-@misc{simulate_pilot,
-  title        = {Where Privileged Self-Knowledge Breaks Down},
-  author       = {Noah Siegel},
+@misc{privileged_self_knowledge_pilot,
+  title        = {Limits of Privileged Self-Knowledge in Explanations},
+  author       = {Alana Sung},
   year         = {2026},
-  howpublished = {Research pilot},
-  note         = {Replicate the self-explanation simulatability advantage at small scale, then push it until it breaks.},
-  }
+  howpublished = {Technical report},
+}
 ```
 
 ## License
