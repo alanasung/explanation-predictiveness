@@ -50,7 +50,7 @@ def _subset(
     return out
 
 
-def _est_dict(est: Estimate) -> dict[str, float | int | bool | str]:
+def _est_dict(est: Estimate) -> dict[str, Any]:
     d = est.to_dict()  # type: ignore[return-value]
     return d  # type: ignore[return-value]
 
