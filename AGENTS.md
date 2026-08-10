@@ -1,9 +1,9 @@
-# Repository guide
+# Whose Explanation Helps You Predict the Model
 
 See [CLAUDE.md](CLAUDE.md) for the full build instructions; this file exists so
 that agents which look for `AGENTS.md` find the same context.
 
-Project: When a Model's Own Story Stops Predicting Its Answers
+Project: Whose Explanation Helps You Predict the Model
 Package: `src/simulate`
 Entry point: `python -m simulate --help`
 

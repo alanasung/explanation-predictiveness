@@ -1,14 +1,14 @@
-# Design Document: When a Model's Own Story Stops Predicting Its Answers
+# Whose Explanation Helps You Predict the Model — design
 
 ## 1. Purpose
 
-This document is the method contract for **When a Model's Own Story Stops Predicting Its Answers**. It specifies what is
+This document is the method contract for **Whose Explanation Helps You Predict the Model**. It specifies what is
 measured, how measurement is instrumented, which artifacts are produced, and
 which claims are out of scope for the pilot profile.
 
 One-liner: Replicate the self-explanation simulatability advantage at small scale, then push it until it breaks.
 
-Hypothesis: Self-explanations help others predict a model only while the decision rule is verbalizable; planted stealth rules should shrink or reverse that edge.
+Hypothesis: First-person rationales help a simulator only while the decision rule is sayable; planted hidden rules should shrink that edge versus third-party text.
 
 ## 2. Scope
 

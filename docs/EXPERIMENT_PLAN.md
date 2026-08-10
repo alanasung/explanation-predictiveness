@@ -1,4 +1,4 @@
-# Experiment plan
+# Experiment plan — Whose Explanation Helps You Predict the Model
 
 Stage-by-stage design. Each stage is registered in `src/simulate/stages.py`
 and appears in `python -m simulate stages`.

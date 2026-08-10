@@ -1,10 +1,10 @@
-# Build instructions
+# Whose Explanation Helps You Predict the Model
 
 Context for coding agents working in this repository.
 
 ## What this is
 
-Research implementation of "When a Model's Own Story Stops Predicting Its Answers".
+Research implementation of "Whose Explanation Helps You Predict the Model".
 
 ## Hard constraints
 

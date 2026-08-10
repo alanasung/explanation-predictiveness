@@ -1,15 +1,15 @@
 <p align="center">
-  <h1 align="center">When a Model's Own Story Stops Predicting Its Answers</h1>
-  <p align="center"><strong>Compare self- versus peer-explanations for simulatability, then stress the advantage with stealth decision rules the explanation is not supposed to mention.</strong></p>
+  <h1 align="center">Whose Explanation Helps You Predict the Model</h1>
+  <p align="center"><strong>Compare first-person and third-party rationales for predicting answers, then stress them with hidden decision rules.</strong></p>
   </p>
 
 ---
 
 ## Overview
 
-This repository implements experimental profiles for **When a Model's Own Story Stops Predicting Its Answers**. Config, caching, hooks, metrics, ablations, reporting, and CI are built for reproducible local pilots on small open-weight models.
+This repository implements experimental profiles for **Whose Explanation Helps You Predict the Model**. Config, caching, hooks, metrics, ablations, reporting, and CI are built for reproducible local pilots on small open-weight models.
 
-Hypothesis (one line): Self-explanations help others predict a model only while the decision rule is verbalizable; planted stealth rules should shrink or reverse that edge.
+Hypothesis (one line): First-person rationales help a simulator only while the decision rule is sayable; planted hidden rules should shrink that edge versus third-party text.
 
 ## Motivation
 
@@ -76,8 +76,7 @@ private data. Synthetic harness-validation outputs are labelled
 
 ## Status
 
-Shared spine is in place. Domain-specific stages land behind the experiment
-registry and must pass the harness-validation script before any measured claim.
+Focus: explanation provenance and simulator predictiveness. Shared infrastructure is in place; domain stages must pass harness validation before any measured claim.
 
 ## Related work
 
@@ -87,7 +86,7 @@ registry and must pass the harness-validation script before any measured claim.
 
 ```bibtex
 @misc{self_story_simulatability,
-  title        = {When a Model's Own Story Stops Predicting Its Answers},
+  title        = {Whose Explanation Helps You Predict the Model},
   author       = {Alana Sung},
   year         = {2026},
   howpublished = {Technical report},

@@ -1,4 +1,4 @@
-# TASK.md — When a Model's Own Story Stops Predicting Its Answers
+# Whose Explanation Helps You Predict the Model
 
 ID convention: `I##` infrastructure, `D##` data, `M##` modelling / hooks,
 `E##` experiments, `A##` ablations, `S##` sweeps, `R##` reporting.

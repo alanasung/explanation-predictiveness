@@ -1,12 +1,12 @@
 # Related work
 
-This note situates **When a Model's Own Story Stops Predicting Its Answers** against related literature.
+This note situates **Whose Explanation Helps You Predict the Model** against related literature.
 
 ## Positioning
 
 Replicate the self-explanation simulatability advantage at small scale, then push it until it breaks.
 
-The design hypothesis is: The privileged self-knowledge effect, where a model's own explanation predicts its future answers better than an equally capable peer's explanation does, is real but domain-fragile. It should shrink or invert in domains where the true decision rule is one the model does not verbalize, such as a planted stealth cue.
+The design hypothesis is: First-person rationales help a simulator only while the decision rule is sayable; planted hidden rules should shrink that edge versus third-party text.
 
 ## Engagement rules
 

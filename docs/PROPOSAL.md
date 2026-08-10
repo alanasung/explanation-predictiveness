@@ -1,6 +1,5 @@
-# When a Model's Own Story Stops Predicting Its Answers
+# Whose Explanation Helps You Predict the Model
 
-**Target project.** Faithfulness, Self-Knowledge, and Introspection
 **Research areas.** Chain of thought; AI welfare; Behavioral evaluation of LLMs
 
 ## Summary
@@ -9,7 +8,7 @@ Replicate the self-explanation simulatability advantage at small scale, then pus
 
 ## Hypothesis
 
-The privileged self-knowledge effect, where a model's own explanation predicts its future answers better than an equally capable peer's explanation does, is real but domain-fragile. It should shrink or invert in domains where the true decision rule is one the model does not verbalize, such as a planted stealth cue.
+First-person rationales help a simulator only while the decision rule is sayable; planted hidden rules should shrink that edge versus third-party text.
 
 A hypothesis worth testing has to be able to lose. This one loses if the
 measurements below come back null, and the design is built so that a null is
@@ -33,7 +32,7 @@ reportable rather than a dead end.
 ## Measurements
 
 - simulatability: simulator accuracy predicting R's held-out answers, which is the primary faithfulness measure, following the motivating prior work
-- privileged self-knowledge effect size (E==R minus E!=R) with bootstrap CIs
+- first-person explanation advantage effect size (E==R minus E!=R) with bootstrap CIs
 - stealth-domain degradation relative to standard domains
 - explanation-mentions-cue rate, reported as a supplementary diagnostic rather than as the definition of faithfulness
 
@@ -52,7 +51,7 @@ reportable rather than a dead end.
 
 ## Role separation
 
-Three roles are held distinct and varied independently, because conflating them is the easiest way to get a spurious privileged-self-knowledge result. R = the REFERENCE model whose answers are being predicted. E = the EXPLAINER model that produced the explanation. S = the SIMULATOR model doing the predicting. The privileged self-knowledge effect is E == R versus E != R with S held fixed. Varying S is a separate axis and is never used to claim the effect.
+Three roles are held distinct and varied independently, because conflating them is the easiest way to get a spurious privileged-self-knowledge result. R = the REFERENCE model whose answers are being predicted. E = the EXPLAINER model that produced the explanation. S = the SIMULATOR model doing the predicting. The first-person explanation advantage effect is E == R versus E != R with S held fixed. Varying S is a separate axis and is never used to claim the effect.
 
 ## Literature engagement
 

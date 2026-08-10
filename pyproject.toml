@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "simulate"
 version = "0.1.0"
-description = "Test when self-explanations stop helping simulate model behavior."
+description = "Compare first-person vs third-party rationales for predicting model answers under hidden rules."
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 license = { text = "MIT" }

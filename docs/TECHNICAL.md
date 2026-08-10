@@ -1,4 +1,4 @@
-# Technical appendix
+# Whose Explanation Helps You Predict the Model
 
 ## A1. Technical note 1
 
